@@ -1,1 +1,1 @@
-# FS_HEL
+# Fullstackopen Helsinki exercises
