@@ -16,6 +16,7 @@ const App = () => {
       })
   }, [])
 
+
   // Querying module
   const [query,setQuery] = useState('')
   const Filter = (props) => {
@@ -51,6 +52,7 @@ const App = () => {
   //Display 
 
   const View = (props) => {
+    setCity(props.dat.capital)
     return(
       <>
         <h1>{props.dat.name.common}</h1>
@@ -63,6 +65,7 @@ const App = () => {
         })
         }
         <img src={props.dat.flags.png} alt=''></img>
+        <Weather city={props.dat.capital}/>
       </>
     )
   }
@@ -101,6 +104,35 @@ const App = () => {
         return(<>Too many matches</>)
       }
     }
+
+  //weather plugin
+  const [city,setCity] = useState('') 
+  const [w_data,setWeatherData] = useState([])
+
+  //weather data
+  useEffect(() => {
+    const api_key = process.env.REACT_APP_API_KEY
+    const URL = 'https://api.openweathermap.org/data/2.5/weather?units=metric&q='+city+'&appid='+api_key
+    console.log('Extracting weather data...')
+    axios
+      .get(URL)
+      .then(response => {
+        console.log('weather extracted')
+        setWeatherData(response.data)
+      })
+  }, [city])
+
+  const Weather = ()  => {
+    console.log(city)
+    console.log(w_data)
+    return(
+      <div>
+        <h2>Weather in {city}</h2>
+        <h5>Temperature: {w_data.main.temp}</h5>
+        <h5>Wind: {w_data.wind.speed}</h5>
+      </div>
+    )
+  }
 
   return (
     <div>
