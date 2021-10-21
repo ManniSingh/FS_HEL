@@ -1,82 +1,62 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-
-const Filter = (props) => {
-  return(
-    <div>
-      Filter with: <input value={props.q}
-                      onChange={props.handler}
-                      />
-    </div>
-  )
-}
-
-const PersonForm = (props) => {
-  return(
-    <form onSubmit={props.adder}>
-        <h2>Add New</h2>
-        <div>
-          name: <input 
-                value={props.name}
-                onChange={props.nameHandler}
-                />
-        </div>
-        <div>
-          number: <input value={props.number}
-                      onChange={props.phoneHandler}
-                  />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-  )
-}
-
-const Persons = (props) => {
-  return(
-    <ul>
-        {props.list.map(data => {
-        return(
-        <li key={data.id}>{data.name} {data.num}</li>
-        )
-        })
-        }
-    </ul>
-  )
-}
+import PersonForm from './components/pForm.js'
+import Filter from './components/filter.js'
+import contactService from './services/contacts'
 
 const App = () => {
+  // Get initial contacts
+  const [deleted, setDeleted] = useState(false)
   const [ persons, setPersons ] = useState([])
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
-  }, []) 
+    contactService
+    .getAll()
+    .then(initialContacts => {
+      setPersons(initialContacts)
+    })
+  }, [deleted])
   const [[newName,newNum], setNewRecord ] = useState(['',''])
   const [query,setQuery] = useState('')
   /* not sure if i should do this */
   const [filtered,setFilter] = useState(persons)
-
-  let nameList = [] 
-
   /* functions below */
 
   const addPerson = (event) => {
     event.preventDefault()
     const personData = {
       name: newName,
-      num: newNum,
-      id: persons.length+1
+      number: newNum,
     }
-    nameList = persons.map(data => data.name)
-    nameList.includes(newName)?
-    alert(`${newName} is already added to phonebook`):
-    setPersons(persons.concat(personData))
+    let found = persons.filter(data=>data.name===newName)
+    if (found.length!==0){
+      let person = found[0]
+      const ID = person.id
+      if (person.number===newNum){
+        alert(`${newName} and ${newNum} are already present in the phonebook`)
+      }
+      else{
+        const okay = window.confirm(`${newName} is already present in the phonebook do you want to update the number?`)
+        if (okay){
+          const change = { ...person, number: newNum}
+          contactService
+          .update(ID, change)
+          .then(returned => {
+            setPersons(persons.map(per => per.id !== ID ? per : returned))
+          })
+          .catch(error => {
+            alert(
+              `the person was already deleted from the server`
+            )
+            setPersons(persons.filter(per => per.id !== ID))
+          })
+        }
+      }
+    }else{
+      contactService
+      .create(personData)
+      .then(returnedData => {
+        setPersons(persons.concat(returnedData))
+      })
+    }
     setNewRecord(['',''])
   }
 
@@ -86,43 +66,70 @@ const App = () => {
     //search()
   }
 
-  /* used : https://stackoverflow.com/a/65757628/6077501 */
   useEffect(() => {
-    console.log("QUERY",query);
     if (query !== '') {
-    let list = persons.filter(data => data?data.name.toLowerCase().startsWith(query.toLowerCase()):false)
-    setFilter(list)
+      console.log("QUERY",query);
+      let list = persons.filter(data => data?data.name.toLowerCase().startsWith(query.toLowerCase()):false)
+      setFilter(list)
     }else{
+      console.log("QUERY Empty");
       setFilter(persons)
     }
   }, [query,persons]);
   
   const handleNameChange = (event) => {
     setNewRecord([event.target.value,newNum])
-    console.log("NameChange",event.target.value,newName)
+    //console.log("NameChange",event.target.value,newName)
   }
 
   const handleNumChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewRecord([newName,event.target.value])
   }
 
-  /* rendering below */
+  const del = (data,list) => {
+    const result = window.confirm(`Delete ${data.name} ?`)
+    const response = result?contactService.del(data):false
+    contactService
+    .getAll()
+    .then(initialContacts => {
+      setPersons(initialContacts)
+      console.log("Got new data!")
+    })
+    setDeleted(true)
+    console.log(persons)
+    return(response)
+  }
 
+  const Persons = (props) => {
+    return(
+      <ul>
+          {props.list.map(data => {
+          return(
+          <li key={data.id}>{data.name} {data.number} 
+          <button onClick={()=>del(data)}>delete</button>
+          </li>
+          )
+          })
+          }
+      </ul>
+    )
+  }
+
+  /* rendering below */
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter q={query} handler={handleQueryChange}/>
       <PersonForm 
-      adder = {addPerson}
-      name = {newName}
-      nameHandler = {handleNameChange}
-      number = {newNum}
-      phoneHandler = {handleNumChange}
-
+        adder = {addPerson}
+        name = {newName}
+        nameHandler = {handleNameChange}
+        number = {newNum}
+        phoneHandler = {handleNumChange}
       />
       <h2>Numbers</h2>
-      <Persons list={filtered}/>
+      <Persons list={filtered} />
     </div>
   )
 }
