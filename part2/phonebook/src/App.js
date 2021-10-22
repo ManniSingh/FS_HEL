@@ -5,7 +5,7 @@ import contactService from './services/contacts'
 
 const App = () => {
   // Get initial contacts
-  const [deleted, setDeleted] = useState(false)
+  // const [deleted, setDeleted] = useState(false)
   const [ persons, setPersons ] = useState([])
   useEffect(() => {
     contactService
@@ -13,7 +13,7 @@ const App = () => {
     .then(initialContacts => {
       setPersons(initialContacts)
     })
-  }, [deleted])
+  }, [])
   const [[newName,newNum], setNewRecord ] = useState(['',''])
   const [query,setQuery] = useState('')
   /* not sure if i should do this */
@@ -26,12 +26,18 @@ const App = () => {
       name: newName,
       number: newNum,
     }
+    console.log("newName:",newName)
+    console.log(persons)
     let found = persons.filter(data=>data.name===newName)
+    console.log(found)
     if (found.length!==0){
       let person = found[0]
       const ID = person.id
       if (person.number===newNum){
-        alert(`${newName} and ${newNum} are already present in the phonebook`)
+        setNotification(`${newName} and ${newNum} are already present in the phonebook`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       }
       else{
         const okay = window.confirm(`${newName} is already present in the phonebook do you want to update the number?`)
@@ -41,11 +47,16 @@ const App = () => {
           .update(ID, change)
           .then(returned => {
             setPersons(persons.map(per => per.id !== ID ? per : returned))
+            setNotification(`${newName} is updated with ${newNum} as the new number`)
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           })
           .catch(error => {
-            alert(
-              `the person was already deleted from the server`
-            )
+            setNotification(`${newName} was already deleted from the server`)
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
             setPersons(persons.filter(per => per.id !== ID))
           })
         }
@@ -55,6 +66,10 @@ const App = () => {
       .create(personData)
       .then(returnedData => {
         setPersons(persons.concat(returnedData))
+        setNotification(`Added ${newName}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       })
     }
     setNewRecord(['',''])
@@ -78,27 +93,33 @@ const App = () => {
   }, [query,persons]);
   
   const handleNameChange = (event) => {
-    setNewRecord([event.target.value,newNum])
+    setNewRecord([event.target.value.trim(),newNum])
     //console.log("NameChange",event.target.value,newName)
   }
 
   const handleNumChange = (event) => {
     //console.log(event.target.value)
-    setNewRecord([newName,event.target.value])
+    setNewRecord([newName,event.target.value.trim()])
   }
 
   const del = (data,list) => {
     const result = window.confirm(`Delete ${data.name} ?`)
-    const response = result?contactService.del(data):false
-    contactService
-    .getAll()
-    .then(initialContacts => {
-      setPersons(initialContacts)
-      console.log("Got new data!")
-    })
-    setDeleted(true)
-    console.log(persons)
-    return(response)
+    if (result) {
+      contactService.del(data)
+      .then(returnedData => {
+        setNotification(`Deleted ${data.name}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+        setPersons(returnedData)
+        //setDeleted(true)
+      }).catch(e=>{
+        setNotification(`${data.name} Not found!`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
+    }
   }
 
   const Persons = (props) => {
@@ -116,10 +137,23 @@ const App = () => {
     )
   }
 
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className="notifier">
+        {message}
+      </div>
+    )
+  }
+  const [notification, setNotification] = useState(null)
   /* rendering below */
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Filter q={query} handler={handleQueryChange}/>
       <PersonForm 
         adder = {addPerson}

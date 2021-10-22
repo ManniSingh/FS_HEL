@@ -19,7 +19,7 @@ const update = (id, newObject) => {
 const del = (data) => {
   const request = axios.delete(`${baseUrl}/${data.id}`)
   return (
-    request.then(()=>alert("deleted "+data.name)).catch(e=>alert(data.name+" Not found!"))
+    request.then(()=>getAll())
   )
 }
 
