@@ -116,6 +116,11 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      setMessage(`A new blog ${newTitle} is created by ${newAuth}`)
+      setTimeout(() => {
+        setMessage(null)
+        setError(false)
+      }, 5000)
     }catch(exception){
       setMessage(exception.message)
       setError(true)
@@ -124,11 +129,6 @@ const App = () => {
         setError(false)
       }, 5000)
     }
-    setMessage(`A new blog ${newTitle} is created by ${newAuth}`)
-    setTimeout(() => {
-      setMessage(null)
-      setError(false)
-    }, 5000)
     }
 
   const blogForm = () => (
