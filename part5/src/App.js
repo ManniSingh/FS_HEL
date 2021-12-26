@@ -152,9 +152,11 @@ const App = () => {
         </p>
         <h2>Create new</h2>
         {blogForm()}
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog}/>
-        )}
+        <div className='bloglist'>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog}/>
+          )}
+        </div>
       </div>
     )
   }
