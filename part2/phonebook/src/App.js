@@ -53,11 +53,10 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            setNotification(`${newName} was already deleted from the server`)
+            setNotification(`${error.response.data.error}`)
             setTimeout(() => {
               setNotification(null)
             }, 5000)
-            setPersons(persons.filter(per => per.id !== ID))
           })
         }
       }
@@ -70,6 +69,13 @@ const App = () => {
         setTimeout(() => {
           setNotification(null)
         }, 5000)
+      })
+      .catch(error => {
+          console.log("ERRORR:",error.response.data)
+          setNotification(`${error.response.data.error}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
       })
     }
     setNewRecord(['',''])
