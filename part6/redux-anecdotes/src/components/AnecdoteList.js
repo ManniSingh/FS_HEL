@@ -17,12 +17,16 @@ const Anecdote = ({ anecdote, handleClick }) => {
 }
 
 const Anecdotes = () => {
+  const filter = useSelector(state => state.filter)
+  const anecdotes = useSelector(state => state.notes)
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
-
+  const filtered = anecdotes.filter(anec=>{
+    //console.log('Anec:'+JSON.stringify(anec))
+    return(anec.content.includes(filter))
+  })
   return(
     <ul>
-      {anecdotes.map(anecdote =>
+      {filtered.map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
@@ -31,6 +35,6 @@ const Anecdotes = () => {
       )}
     </ul>
   )
-}
+} 
 
 export default Anecdotes
