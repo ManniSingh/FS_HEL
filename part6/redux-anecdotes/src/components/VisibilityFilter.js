@@ -1,4 +1,4 @@
-import { filterChange } from '../reducers/filterReducer'
+import { filterChange,filter } from '../reducers/filterReducer'
 import { useDispatch} from 'react-redux'
 
 const Filter = () => {
@@ -6,7 +6,7 @@ const Filter = () => {
     const handleChange = (event) => {
       // input-field value is in variable event.target.value
       console.log('in handle:'+event.target.value)
-      dispatch(filterChange(event.target.value))
+      dispatch(filter(filterChange(event.target.value)))
 
     }
     const style = {
