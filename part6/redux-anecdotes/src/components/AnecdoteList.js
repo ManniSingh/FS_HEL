@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {voter,anec} from '../reducers/anecdoteReducer'
+import {voter} from '../reducers/anecdoteReducer'
 import { showNotification } from '../reducers/notification'
 
 const Anecdote = ({ anecdote, handleClick }) => {
@@ -20,11 +20,12 @@ const Anecdote = ({ anecdote, handleClick }) => {
 const Anecdotes = () => {
   const filter = useSelector(state => state.filter)
   const anecdotes = useSelector(state => state.notes)
+  //console.log('Anecs:'+JSON.stringify(anecdotes))
   const dispatch = useDispatch()
   const filtered = anecdotes.filter(anec=>{
     return(anec.content.includes(filter))
   })
-  console.log('Filtered:'+JSON.stringify(filtered))
+  //console.log('Filtered:'+JSON.stringify(filtered))
   return(
     <ul>
       {filtered.map(anecdote =>
@@ -32,7 +33,7 @@ const Anecdotes = () => {
           key={anecdote.id}
           anecdote={anecdote}
           handleClick={() => {
-            dispatch(anec(voter(anecdote.id)))
+            dispatch(voter(anecdote))
             dispatch(showNotification(anecdote.content))
           }}
         />

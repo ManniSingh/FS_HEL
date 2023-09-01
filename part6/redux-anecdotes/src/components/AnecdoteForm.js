@@ -1,8 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '../reducers/notification'
-import { createNew } from '../services/anecs'
-import { anec, createNote } from '../reducers/anecdoteReducer'
+import {createAnec} from '../reducers/anecdoteReducer'
 
 const New = (props) => {
   const dispatch = useDispatch()
@@ -11,13 +10,8 @@ const New = (props) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch(anec(createNote(content)))
+    dispatch(createAnec(content))
     dispatch(showNotification(content))
-
-
-    await createNew(content).then(content=>{
-      console.log('Created:'+JSON.stringify(content))
-    })
   }
 
   return (

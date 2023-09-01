@@ -1,74 +1,47 @@
 import { createSlice } from '@reduxjs/toolkit'
-
-/*
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
-*/
-
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
-
-//const initialState = anecdotesAtStart.map(asObject)
+import { getAll,createNew,updateVote } from '../services/anecs'
 
 
 const anecSlice = createSlice({
   name: 'anecs',
   initialState: [],
   reducers: {
-    anec(state,action){
-      console.log('state now: ', state)
-      console.log('action', action)
-      switch(action.payload.type) {
-        case 'NEW_NOTE':
-          return [...state, action.payload.payload].sort((a, b) => b.votes-a.votes)
-        case 'VOTE':
-          const id = action.payload.payload.id
-          console.log(id)
-          const noteToChange = state.find(n => n.id === id)
-          const changedNote = { 
-            ...noteToChange, 
-            votes: noteToChange.votes+1
-          }
-          return state.map(note =>
-            note.id !== id ? note : changedNote 
-          ).sort((a, b) => b.votes-a.votes)
-        default:
-          console.log('running defalt?')
-          return state
-        }
+    update(state,action){
+      const changedAnec = action.payload
+      return state.map(note =>
+        note.id !== changedAnec.id ? note : changedAnec 
+      ).sort((a, b) => b.votes-a.votes)
+    },
+    appendAnec(state, action) {
+      console.log('Appended:'+JSON.stringify(action.payload))
+      return [...state, action.payload].sort((a, b) => b.votes-a.votes)
     },
     setAnecs(state, action) {
-      return action.payload
+      return action.payload.sort((a, b) => b.votes-a.votes)
     }
   }
 })
 
-export const voter = (id) => {
-  return {
-    type: 'VOTE',
-    payload: { id }
-  }
-}  
-
-export const createNote = (content) => {
-  return {
-    type: 'NEW_NOTE',
-    payload: asObject(content)
+export const initialize = () => {
+  return async dispatch => {
+    const anecs = await getAll()
+    dispatch(setAnecs(anecs))
   }
 }
 
-export const { anec, setAnecs } = anecSlice.actions
+export const createAnec = content => {
+  return async dispatch => {
+    const newAnec = await createNew(content)
+    dispatch(appendAnec(newAnec))
+  }
+}
+ 
+export const voter = anecObj => {
+  return async dispatch => {
+    const newAnec = await updateVote(anecObj)
+    dispatch(update(newAnec))
+  }
+}  
+
+export const { update, setAnecs, appendAnec } = anecSlice.actions
 export default anecSlice.reducer
