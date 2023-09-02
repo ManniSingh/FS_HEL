@@ -3,8 +3,11 @@ import Notification from './components/Notification'
 
 import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
 import { getAnecs, updateAnec } from './requests'
+import NotifyContext from './NotifyContext'
+import { useContext } from 'react'
 
 const App = () => {
+  const [notification, NotifyDispatch] = useContext(NotifyContext) // getting notification context
   const queryClient = useQueryClient()
 
   // fetching all
@@ -33,12 +36,9 @@ const App = () => {
 
   const anecdotes = result.data.sort((a, b) => b.votes-a.votes)
 
-  const toggleImportance = (note) => {
-    
-  }
-
   const handleVote = (anecdote) => {
     updateAnecMutation.mutate({...anecdote, votes: anecdote.votes+1})
+    NotifyDispatch(anecdote.content)
   }
 
   return (
