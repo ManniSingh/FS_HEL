@@ -1,0 +1,28 @@
+{
+  "persons": [
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 1
+    },
+    {
+      "name": "manni",
+      "number": "1",
+      "id": 2
+    }
+  ],
+  "notes": [
+    {
+      "content": "first note",
+      "id": 1
+    },
+    {
+      "content": "new note",
+      "id": 2
+    },
+    {
+      "content": "new note 2",
+      "id": 3
+    }
+  ]
+}
