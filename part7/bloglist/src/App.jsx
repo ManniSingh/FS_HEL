@@ -4,6 +4,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import Togglable from './components/togglable'
 import LoginForm from './components/login'
 import BlogForm from './components/BlogForm'
@@ -19,6 +20,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [message, msgDispatch] = useReducer(notifyReducer, '')
+  const [users, setUsers] = useState([])
 
   const blogFormRef = useRef()
 
@@ -56,6 +58,21 @@ const App = () => {
     refetchOnWindowFocus: false
   })
 
+  const _users = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const localUser = readLocal()
+      if (localUser) {
+        const response = await userService.users()
+        //console.log('in query:' + JSON.stringify(response))
+        return response.sort((a, b) => b.blogs.length - a.blogs.length)
+      } else {
+        return null
+      }
+    },
+    refetchOnWindowFocus: false
+  })
+
   const displayMsg = (msg) => {
     msgDispatch({ payload:msg })
     setTimeout(() => {
@@ -78,9 +95,15 @@ const App = () => {
       await queryClient.invalidateQueries(['blogs']) // Await here
       await queryClient.refetchQueries(['blogs'])
       const fetchedBlogs = queryClient.getQueryData(['blogs'])
+      await queryClient.invalidateQueries(['users']) // Await here
+      await queryClient.refetchQueries(['users'])
+      const fetchedUsers = queryClient.getQueryData(['users'])
       //console.log('fetched:'+JSON.stringify(fetchedBlogs))
       if (_blogs.isSuccess) {
         setBlogs(fetchedBlogs)
+      }
+      if (_users.isSuccess) {
+        setUsers(fetchedUsers)
       }
     },
     onError: (error) => {
@@ -185,6 +208,25 @@ const App = () => {
               setUser(null)
             }}>Log out</button>
           </p>
+          <h2>Users</h2>
+          <table>
+            <tbody>
+              <tr>
+                <th></th>
+                <th>blogs</th>
+              </tr>
+              {users.map(_user => {
+                return(
+                  <tr key={_user.id}>
+                    <td> {_user.name} </td>
+                    <td> {_user.blogs.length} </td>
+                  </tr>
+                )
+              }
+              )}
+            </tbody>
+          </table>
+          {/*
           <h2>Create new</h2>
           {blogForm()}
           <div className='bloglist'>
@@ -192,6 +234,7 @@ const App = () => {
               //<Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog}/>
             ):''}
           </div>
+           */}
         </div>
       </OpContext.Provider>
     )
