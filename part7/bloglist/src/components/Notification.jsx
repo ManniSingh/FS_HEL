@@ -1,21 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import OpContext from '../OpContext'
 
-function Notification({ message, error }) {
+function Notification() {
+  const [message] = useContext(OpContext)
   if (message === null) {
     return null
   }
-  if (error) {
+  else {
     return (
-      <div className="error">
+      <div className="notify">
         {message}
       </div>
     )
   }
-  return (
-    <div className="noerror">
-      {message}
-    </div>
-  )
 }
 
 export default Notification

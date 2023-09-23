@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import OpContext from '../OpContext'
 
-function Blog({ blog, updateBlog, removeBlog }) {
+function Blog({ blog }) {
+  const [ message, updateBlog, removeBlog ] = useContext(OpContext)
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -24,6 +26,7 @@ function Blog({ blog, updateBlog, removeBlog }) {
       likes: blog.likes + 1,
       url: blog.url,
     }
+    console.log('new blog:'+JSON.stringify(blogObject))
     updateBlog(blog.id, blogObject)
   }
 
