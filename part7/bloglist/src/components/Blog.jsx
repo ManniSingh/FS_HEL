@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import OpContext from '../OpContext'
 
 function Blog({ blog }) {
-  const [ message, updateBlog, removeBlog ] = useContext(OpContext)
+  const [ message, users, updateBlog, removeBlog ] = useContext(OpContext)
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,

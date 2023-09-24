@@ -1,6 +1,7 @@
 /* eslint-disable no-inner-declarations */
 import { useState, useReducer, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import { Users, UserBlogs } from './components/users'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -13,6 +14,8 @@ import userReducer from './reducers/userreducer'
 import notifyReducer from './reducers/notifyReducer'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 
 const App = () => {
   const [credentials, userDispatch] = useReducer(userReducer, ['',''])
@@ -181,6 +184,9 @@ const App = () => {
     removeBlogMutate.mutate(id)
   }
 
+  const handleUserClick = (userBlogs) => {
+    console.log(userBlogs)
+  }
   const blogForm = () => (
     <Togglable buttonLabel='new note' ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
@@ -197,36 +203,24 @@ const App = () => {
       </OpContext.Provider>
     )
   } else{
+    console
     return (
-      <OpContext.Provider value={[message, updateBlog, removeBlog]}>
-        <div>
-          <Notification />
-          <h2>blogs</h2>
-          <p>{user.name} logged-in
-            <button onClick={() => {
-              window.localStorage.clear()
-              setUser(null)
-            }}>Log out</button>
-          </p>
-          <h2>Users</h2>
-          <table>
-            <tbody>
-              <tr>
-                <th></th>
-                <th>blogs</th>
-              </tr>
-              {users.map(_user => {
-                return(
-                  <tr key={_user.id}>
-                    <td> {_user.name} </td>
-                    <td> {_user.blogs.length} </td>
-                  </tr>
-                )
-              }
-              )}
-            </tbody>
-          </table>
-          {/*
+      <OpContext.Provider value={[message, users, updateBlog, removeBlog]}>
+        <BrowserRouter>
+          <div>
+            <Notification />
+            <h2>blogs</h2>
+            <p>{user.name} logged-in
+              <button onClick={() => {
+                window.localStorage.clear()
+                setUser(null)
+              }}>Log out</button>
+            </p>
+            <Routes>
+              <Route path="/" element={<Users />} />
+              <Route path="/users/:id" element={<UserBlogs />} />
+            </Routes>
+            {/*
           <h2>Create new</h2>
           {blogForm()}
           <div className='bloglist'>
@@ -235,7 +229,8 @@ const App = () => {
             ):''}
           </div>
            */}
-        </div>
+          </div>
+        </BrowserRouter>
       </OpContext.Provider>
     )
   }
