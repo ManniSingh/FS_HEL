@@ -1,8 +1,16 @@
 import React, { useState, useContext } from 'react'
 import OpContext from '../OpContext'
+import { useParams } from 'react-router-dom'
 
-function Blog({ blog }) {
-  const [ message, users, updateBlog, removeBlog ] = useContext(OpContext)
+function Blog() {
+  const [ message, blogs, users, updateBlog, removeBlog ] = useContext(OpContext)
+  const { id } = useParams()
+  //console.log('BLOGS:'+JSON.stringify(blogs))
+  //console.log('USERS:'+JSON.stringify(users))
+  //console.log('Blog id from route parameters: ' + id)
+  //console.log('All blog IDs: ' + blogs.map(blogData => blogData.id).join(', '))
+  const blog = blogs?blogs.find((blogData) => blogData.id===id):[]
+  //console.log(JSON.stringify(blog))
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,7 +19,9 @@ function Blog({ blog }) {
     marginBottom: 5,
   }
   const [visible, setVisible] = useState(false)
-
+  if (!blog){
+    return null
+  }
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -26,7 +36,7 @@ function Blog({ blog }) {
       likes: blog.likes + 1,
       url: blog.url,
     }
-    console.log('new blog:'+JSON.stringify(blogObject))
+    //console.log('new blog:'+JSON.stringify(blogObject))
     updateBlog(blog.id, blogObject)
   }
 

@@ -4,7 +4,12 @@ import { Link, useParams } from 'react-router-dom'
 
 
 function Users() {
-  const [ message, users, updateBlog, removeBlog ] = useContext(OpContext)
+  const [ message, blogs, users, updateBlog, removeBlog ] = useContext(OpContext)
+  //console.log('users:'+JSON.stringify(users))
+  //console.log('blogs:'+JSON.stringify(blogs))
+  if (!users){
+    return null
+  }
   return (
     <div>
       <h2>Users</h2>
@@ -31,16 +36,19 @@ function Users() {
 
 function UserBlogs() {
   const { id } = useParams()
-  const [ message, users, updateBlog, removeBlog ] = useContext(OpContext)
-  console.log('uid:'+id)
-  const blogs = users.find((userData) => userData.id===id).blogs
+  const [ message, blogs, users, updateBlog, removeBlog ] = useContext(OpContext)
+  if (!users){
+    return null
+  }
+  //console.log('uid:'+id)
+  const _blogs = users.find((userData) => userData.id===id).blogs
   return (
     <div>
       <h2>user</h2>
       <h3>Added Blogs</h3>
       <ul>
         {
-          blogs.map(blog => <li key={blog.id}>{blog.title}</li>)
+          _blogs.map(blog => <li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li>)
         }
       </ul>
     </div>

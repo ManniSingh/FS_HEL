@@ -194,7 +194,7 @@ const App = () => {
   )
   if (user === null) {
     return (
-      <OpContext.Provider value={[message, updateBlog, removeBlog]}>
+      <OpContext.Provider value={[message, blogs, users, updateBlog, removeBlog]}>
         <div>
           <Notification />
           <h2>Log in to application</h2>
@@ -205,7 +205,7 @@ const App = () => {
   } else{
     console
     return (
-      <OpContext.Provider value={[message, users, updateBlog, removeBlog]}>
+      <OpContext.Provider value={[message, blogs, users, updateBlog, removeBlog]}>
         <BrowserRouter>
           <div>
             <Notification />
@@ -219,13 +219,13 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Users />} />
               <Route path="/users/:id" element={<UserBlogs />} />
+              <Route path="/blogs/:id" element={<Blog />} />
             </Routes>
             {/*
           <h2>Create new</h2>
           {blogForm()}
           <div className='bloglist'>
             {blogs?blogs.map(blog => <Blog key={blog.id} blog={blog}/>
-              //<Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog}/>
             ):''}
           </div>
            */}
