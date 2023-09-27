@@ -19,6 +19,7 @@ function Blog() {
     marginBottom: 5,
   }
   const [visible, setVisible] = useState(false)
+  const [commentInput, setCommentInput] = useState('')
   if (!blog){
     return null
   }
@@ -38,6 +39,20 @@ function Blog() {
     }
     //console.log('new blog:'+JSON.stringify(blogObject))
     updateBlog(blog.id, blogObject)
+  }
+
+  const pushComment = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: blog.title,
+      author: blog.author,
+      likes: blog.likes,
+      url: blog.url,
+      comments: [...blog.comments, commentInput],
+    }
+    console.log('new blog:'+JSON.stringify(blogObject))
+    updateBlog(blog.id, blogObject)
+    setCommentInput('')
   }
 
   const remove = () => {
@@ -76,6 +91,25 @@ function Blog() {
         {' '}
         <br />
         <button type="button" onClick={() => remove()}>Remove</button>
+      </div>
+      <div>
+        <h2>comments</h2>
+        <form onSubmit={pushComment}>
+          <div>
+            <input
+              id="comment"
+              type="text"
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
+          </div>
+          <button id="add_comment" type="submit">add comment</button>
+        </form>
+        <ul>
+          {blog.comments.map((comment, index) => (
+            <li key={index}>{comment}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )
