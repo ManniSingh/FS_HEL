@@ -14,7 +14,7 @@ import userReducer from './reducers/userreducer'
 import notifyReducer from './reducers/notifyReducer'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 
 
 const App = () => {
@@ -203,19 +203,23 @@ const App = () => {
       </OpContext.Provider>
     )
   } else{
-    console
+    const UID = users.find((_user) => _user.username === user.username)?.id || null
     return (
       <OpContext.Provider value={[message, blogs, users, updateBlog, removeBlog]}>
         <BrowserRouter>
           <div>
             <Notification />
+            <div>
+              <Link to={`/users/${UID}`}>blogs</Link>
+              <Link to="/">users</Link>
+              <p>{user.name} logged-in
+                <button onClick={() => {
+                  window.localStorage.clear()
+                  setUser(null)
+                }}>Log out</button>
+              </p>
+            </div>
             <h2>blogs</h2>
-            <p>{user.name} logged-in
-              <button onClick={() => {
-                window.localStorage.clear()
-                setUser(null)
-              }}>Log out</button>
-            </p>
             <Routes>
               <Route path="/" element={<Users />} />
               <Route path="/users/:id" element={<UserBlogs />} />
