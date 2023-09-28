@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import Tail from '../tail'
 
 function LoginForm({
   handleSubmit,
@@ -9,30 +10,27 @@ function LoginForm({
   password,
 }) {
   return (
-    <div>
-      <h2>Login</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
-          <input
+    <Tail.div>
+      <Tail.h2>Login</Tail.h2>
+      <Tail.form onSubmit={handleSubmit}>
+        <Tail.div>
+          Username
+          <Tail.input
             id="username"
             value={username}
             onChange={handleUsernameChange}
           />
-        </div>
-        <div>
-          password
-          <input
+          Password
+          <Tail.input
             id="password"
             type="password"
             value={password}
             onChange={handlePasswordChange}
           />
-        </div>
-        <button id="login-button" type="submit">login</button>
-      </form>
-    </div>
+          <Tail.button id="login-button" type="submit">login</Tail.button>
+        </Tail.div>
+      </Tail.form>
+    </Tail.div>
   )
 }
 

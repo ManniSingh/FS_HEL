@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import OpContext from '../OpContext'
 import { useParams } from 'react-router-dom'
+import Tail from '../tail'
 
 function Blog() {
   const [ message, blogs, users, updateBlog, removeBlog ] = useContext(OpContext)
@@ -11,13 +12,15 @@ function Blog() {
   //console.log('All blog IDs: ' + blogs.map(blogData => blogData.id).join(', '))
   const blog = blogs?blogs.find((blogData) => blogData.id===id):[]
   //console.log(JSON.stringify(blog))
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+
+  // const blogStyle = {
+  //   paddingTop: 10,
+  //   paddingLeft: 2,
+  //   border: 'solid',
+  //   borderWidth: 1,
+  //   marginBottom: 5,
+  // }
+
   const [visible, setVisible] = useState(false)
   const [commentInput, setCommentInput] = useState('')
   if (!blog){
@@ -48,9 +51,9 @@ function Blog() {
       author: blog.author,
       likes: blog.likes,
       url: blog.url,
-      comments: [...blog.comments, commentInput],
+      comments: (blog.comments)?[...blog.comments, commentInput]:[commentInput],
     }
-    console.log('new blog:'+JSON.stringify(blogObject))
+    //console.log('new blog:'+JSON.stringify(blogObject))
     updateBlog(blog.id, blogObject)
     setCommentInput('')
   }
@@ -61,20 +64,20 @@ function Blog() {
   }
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible} className="hiddenBlog">
+    <Tail.div>
+      <div className='flex flex-col items-center mb-4' style={hideWhenVisible}>
         {blog.title}
         {' '}
         by
         {' '}
         {blog.author}
         {' '}
-        <button type="button" onClick={toggleVisibility}>view</button>
+        <Tail.button type="button" onClick={toggleVisibility}>view</Tail.button>
       </div>
       <div style={showWhenVisible} className="visibleBlog">
         {blog.title}
         {' '}
-        <button type="button" onClick={toggleVisibility}>hide</button>
+        <Tail.button type="button" onClick={toggleVisibility}>hide</Tail.button>
         {' '}
         <br />
         {blog.url}
@@ -84,34 +87,40 @@ function Blog() {
         {' '}
         {blog.likes}
         {' '}
-        <button type="button" onClick={() => update()}>like</button>
+        <Tail.button type="button" onClick={() => update()}>like</Tail.button>
         {' '}
         <br />
         {blog.name}
         {' '}
         <br />
-        <button type="button" onClick={() => remove()}>Remove</button>
+        <Tail.button type="button" onClick={() => remove()}>Remove</Tail.button>
       </div>
-      <div>
-        <h2>comments</h2>
-        <form onSubmit={pushComment}>
-          <div>
-            <input
+      <Tail.div>
+        <Tail.h2>comments</Tail.h2>
+        <Tail.form onSubmit={pushComment}>
+          <Tail.div>
+            <Tail.input
               id="comment"
               type="text"
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
             />
-          </div>
-          <button id="add_comment" type="submit">add comment</button>
-        </form>
-        <ul>
-          {blog.comments.map((comment, index) => (
-            <li key={index}>{comment}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+          </Tail.div>
+          <Tail.button id="add_comment" type="submit">add comment</Tail.button>
+        </Tail.form>
+        <Tail.div>
+          <Tail.ul>
+            {blog.comments && blog.comments.length > 0 && (
+              <Tail.ul>
+                {blog.comments.map((comment, index) => (
+                  <Tail.li key={index}>{comment}</Tail.li>
+                ))}
+              </Tail.ul>
+            )}
+          </Tail.ul>
+        </Tail.div>
+      </Tail.div>
+    </Tail.div>
   )
 }
 

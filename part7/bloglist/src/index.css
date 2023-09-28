@@ -1,4 +1,8 @@
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .error {
   color: red;
   background: lightgrey;
@@ -20,4 +24,6 @@
 }
 
 div.blog {border-style: solid;}
+
+
 

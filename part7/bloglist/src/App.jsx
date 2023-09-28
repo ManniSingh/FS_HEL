@@ -12,6 +12,7 @@ import BlogForm from './components/BlogForm'
 import OpContext from './OpContext'
 import userReducer from './reducers/userreducer'
 import notifyReducer from './reducers/notifyReducer'
+import Tail from './tail'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
@@ -195,11 +196,11 @@ const App = () => {
   if (user === null) {
     return (
       <OpContext.Provider value={[message, blogs, users, updateBlog, removeBlog]}>
-        <div>
+        <Tail.div>
           <Notification />
-          <h2>Log in to application</h2>
+          <Tail.h2>Log in to application</Tail.h2>
           {loginForm()}
-        </div>
+        </Tail.div>
       </OpContext.Provider>
     )
   } else{
@@ -207,19 +208,26 @@ const App = () => {
     return (
       <OpContext.Provider value={[message, blogs, users, updateBlog, removeBlog]}>
         <BrowserRouter>
-          <div>
+          <Tail.div>
             <Notification />
-            <div>
-              <Link to={`/users/${UID}`}>blogs</Link>
-              <Link to="/">users</Link>
-              <p>{user.name} logged-in
-                <button onClick={() => {
+            <Tail.div>
+              <nav className="flex items-center justify-between p-4 bg-cyan-500 text-white">
+                <Link to={`/users/${UID}`} className="hover:underline mr-4">
+                    Blogs
+                </Link>
+                <Link to="/" className="hover:underline mr-4">
+                    Users
+                </Link>
+              </nav>
+              <Tail.p>{user.name} logged-in
+                <Tail.button onClick={() => {
                   window.localStorage.clear()
                   setUser(null)
-                }}>Log out</button>
-              </p>
-            </div>
-            <h2>blogs</h2>
+                  window.location.href = '/'
+                }}>Log out</Tail.button>
+              </Tail.p>
+            </Tail.div>
+            <Tail.h2>blogs</Tail.h2>
             <Routes>
               <Route path="/" element={<Users />} />
               <Route path="/users/:id" element={<UserBlogs />} />
@@ -231,9 +239,9 @@ const App = () => {
           <div className='bloglist'>
             {blogs?blogs.map(blog => <Blog key={blog.id} blog={blog}/>
             ):''}
-          </div>
+          </Tail.div>
            */}
-          </div>
+          </Tail.div>
         </BrowserRouter>
       </OpContext.Provider>
     )

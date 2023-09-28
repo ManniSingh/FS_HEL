@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import Tail from '../tail'
 function BlogForm({ createBlog }) {
   const [newTitle, setNewTitle] = useState('')
   const [newAuth, setNewAuthor] = useState('')
@@ -29,21 +30,21 @@ function BlogForm({ createBlog }) {
   }
 
   return (
-    <form onSubmit={addBlog}>
+    <Tail.form onSubmit={addBlog}>
       title:
       {' '}
-      <input id="title" value={newTitle} onChange={handleTitleChange} />
+      <Tail.input id="title" value={newTitle} onChange={handleTitleChange} />
       <br />
       author:
       {' '}
-      <input id="author" value={newAuth} onChange={handleAuthChange} />
+      <Tail.input id="author" value={newAuth} onChange={handleAuthChange} />
       <br />
       url:
       {' '}
-      <input id="url" value={newUrl} onChange={handleUrlChange} />
+      <Tail.input id="url" value={newUrl} onChange={handleUrlChange} />
       <br />
-      <button type="submit">create</button>
-    </form>
+      <Tail.button type="submit">create</Tail.button>
+    </Tail.form>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import OpContext from '../OpContext'
 import { Link, useParams } from 'react-router-dom'
+import Tail from '../tail'
 
 
 function Users() {
@@ -11,26 +12,26 @@ function Users() {
     return null
   }
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>blogs</th>
-          </tr>
+    <Tail.div>
+      <Tail.h2>Users</Tail.h2>
+      <Tail.table>
+        <Tail.tbody>
+          <Tail.tr>
+            <Tail.th></Tail.th>
+            <Tail.th>blogs</Tail.th>
+          </Tail.tr>
           {users.map(_user => {
             return(
-              <tr key={_user.id}>
-                <td> <Link to={`/users/${_user.id}`}>{_user.username}</Link> </td>
-                <td> {_user.blogs.length} </td>
-              </tr>
+              <Tail.tr key={_user.id}>
+                <Tail.td> <Link className="text-blue-500 hover:underline" to={`/users/${_user.id}`}>{_user.username}</Link> </Tail.td>
+                <Tail.td> {_user.blogs.length} </Tail.td>
+              </Tail.tr>
             )
           }
           )}
-        </tbody>
-      </table>
-    </div>
+        </Tail.tbody>
+      </Tail.table>
+    </Tail.div>
   )
 }
 
@@ -43,15 +44,15 @@ function UserBlogs() {
   //console.log('uid:'+id)
   const _blogs = users.find((userData) => userData.id===id).blogs
   return (
-    <div>
-      <h2>user</h2>
-      <h3>Added Blogs</h3>
-      <ul>
+    <Tail.div>
+      <Tail.h2>user</Tail.h2>
+      <Tail.h3>Added Blogs</Tail.h3>
+      <Tail.ul>
         {
-          _blogs.map(blog => <li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li>)
+          _blogs.map(blog => <Tail.li key={blog.id}><Link className="text-blue-500 hover:underline" to={`/blogs/${blog.id}`}>{blog.title}</Link></Tail.li>)
         }
-      </ul>
-    </div>
+      </Tail.ul>
+    </Tail.div>
   )
 }
 
