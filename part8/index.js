@@ -152,7 +152,8 @@ const resolvers = {
       if (!author) {
         authors.push({ name: args.author })
       }
-      return { title: newBook.title, author: newBook.author }
+      //return { title: newBook.title, author: newBook.author }
+      return newBook //changed for 8.10
     },
     editAuthor: (root, args) => {
         const author = authors.find((author) => author.name === args.name)
