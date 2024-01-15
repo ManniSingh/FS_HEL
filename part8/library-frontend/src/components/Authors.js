@@ -30,9 +30,9 @@ const Authors = (props) => {
   if (result.loading) {
     return <div>loading...</div>
   }
-  if (!props.show) {
-    return null
-  }
+  // if (!props.show) {
+  //   return null
+  // }
   const authors = result.data.allAuthors
 
   const submit = async (event) => {
