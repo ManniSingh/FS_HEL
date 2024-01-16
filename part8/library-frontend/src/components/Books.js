@@ -1,9 +1,8 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery} from '@apollo/client'
 import { useState } from 'react'
-// import Notify from './notify'
-// import LoginForm from './loginForm'
 
-const ALL_BOOKS = gql`
+//queries
+export const ALL_BOOKS = gql`
   query allBooks($author: String, $genre: String) {
     allBooks(author: $author, genre: $genre) {
       title

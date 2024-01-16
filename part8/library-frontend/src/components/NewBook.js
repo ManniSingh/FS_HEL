@@ -1,16 +1,48 @@
 import { useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
+import { ALL_BOOKS } from './Books'
 
 const ADD_BOOK = gql`
-  mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
-    addBook(title: $title, author: $author, published: $published, genres: $genres) {
+  mutation addBook(
+    $title: String!
+    $author: String!
+    $published: Int!
+    $genres: [String!]!
+  ) {
+    addBook(
+      title: $title
+      author: $author
+      published: $published
+      genres: $genres
+    ) {
       title
-      author
+      author {
+        name
+
+      }
       published
       genres
     }
   }
 `
+
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same Book twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.name
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+  cache.updateQuery(query, ({ allBooks }) => {
+    //const allBooks = cache.query(query).data.allBooks
+    //console.log(allBooks)
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    }
+  })
+}
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -19,7 +51,22 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [addBook] = useMutation(ADD_BOOK)
+  const [addBook] = useMutation(ADD_BOOK, {
+    // update: (cache, response) => {
+    //   const query = {query: ALL_BOOKS}
+    //   const existingData = cache.read(query)
+    //   console.log(existingData)
+    //   const cacheSnapshot = cache.extract()
+    //   console.log('Cache Snapshot:', cacheSnapshot)
+    //   if (existingData) {
+    //     updateCache(cache, query, response.data.addBook)
+    //   } 
+    //   else {
+    //     window.alert("cache empty..")
+    //   }
+    //   }
+    refetchQueries: [{ query: ALL_BOOKS }]
+  })
 
   const submit = async (event) => {
     event.preventDefault()
@@ -28,7 +75,7 @@ const NewBook = (props) => {
     })
 
 
-    console.log('add book...')
+    console.log('added book...')
 
     setTitle('')
     setPublished('')
