@@ -1,0 +1,19 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "ts-node": "ts-node"
+  },
+  "name": "sec_b",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "undici-types": "^5.26.5"
+  },
+  "author": "Manni",
+  "license": "ISC",
+  "description": ""
+}
