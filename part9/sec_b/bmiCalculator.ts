@@ -12,18 +12,18 @@ interface BmiMetrics {
       return {
         height: Number(args[2]),
         weight: Number(args[3])
-      }
+      };
     } else {
       throw new Error('Provided values were not numbers!');
     }
-  }
+  };
   
   export const calculateBmi = (height: number, weight: number): string => {
     if (height === 0) throw new Error("Divide by 0!");
     if (isNaN(height) || isNaN(weight)) {
         throw new Error("malformed arguments!");
     }
-    height=height/100 // CM to Meters for meter per KG.
+    height=height/100; // CM to Meters for meter per KG.
     const bmi = weight / (height*height);
     if (bmi < 18.5) {
         return "Underweight";
@@ -34,14 +34,14 @@ interface BmiMetrics {
     } else {
         return "Obese";
     }
-  }
+  };
   
   try {
     const { height, weight } = parseArguments(process.argv);
     const bmi = calculateBmi(height, weight);
     console.log('BMI:',bmi);
     } catch (error: unknown) {
-    let errorMessage = 'Something bad happened.'
+    let errorMessage = 'Something bad happened.';
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
     }

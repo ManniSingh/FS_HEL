@@ -7,7 +7,7 @@ interface Targets {
 
 const parseArray = (args: string[]): Targets => {
     if (args.length < 10) throw new Error("Not enough arguments");
-    let _arr:string[] = args.slice(2);
+    const _arr:string[] = args.slice(2);
     let arr: number[] = [];
     try{
         if (_arr.every((element) => !isNaN(Number(element)))){
@@ -18,7 +18,7 @@ const parseArray = (args: string[]): Targets => {
         throw new Error("Provided values were not numbers!");
     }
     return { days: [], target: 0 };
-}
+};
   
 interface Results {
     periodLength: number;
@@ -34,27 +34,34 @@ const rate = (inp: Targets, avg: number): number =>{
     let rating:number = 0;
     const count: number = inp.days.filter((value) => value > inp.target).length;
     if (count === inp.days.length) {
-        rating = 3
+        rating = 3;
     }else if (avg >= inp.target){
-        rating = 2
+        rating = 2;
     }else if (avg >= 0.6*inp.target){
-        rating = 1
+        rating = 1;
     }
-    return rating
-} 
+    return rating;
+};
   
 export const calculateExercise = (inp: Targets): Results => {
-    const _results = {} as Results;
-    _results.periodLength = inp.days.length;
-    _results.target = inp.target;
-    //console.log(inp.days)
-    //console.log(_results.periodLength);
-    _results.avarage = inp.days.reduce((acc, current) => (acc+current),0)/_results.periodLength; 
-    _results.success = _results.avarage >= inp.target ? true : false;
-    _results.rating = rate(inp,_results.avarage);
-    _results.ratingDescription = _results.success ? "Well Done" : "not too bad but could be better";
-    return _results;
-}
+    if (inp.days === undefined || inp.target === undefined) {
+        throw new Error("parameters missing");
+    }
+    if (inp.days.every((element) => !isNaN(Number(element)))&&!isNaN(Number(inp.target))){
+        const _results = {} as Results;
+        _results.periodLength = inp.days.length;
+        _results.target = inp.target;
+        //console.log(inp.days)
+        //console.log(_results.periodLength);
+        _results.avarage = inp.days.reduce((acc, current) => (acc+current),0)/_results.periodLength; 
+        _results.success = _results.avarage >= inp.target ? true : false;
+        _results.rating = rate(inp,_results.avarage);
+        _results.ratingDescription = _results.success ? "Well Done" : "not too bad but could be better";
+        return _results;
+    }else{
+        throw new Error("malformatted parameters");
+    }    
+};
   
 try {
     const inp:Targets = parseArray(process.argv);
