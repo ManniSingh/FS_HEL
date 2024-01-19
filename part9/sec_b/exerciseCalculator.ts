@@ -6,16 +6,18 @@ interface Targets {
   }
 
 const parseArray = (args: string[]): Targets => {
-    if (args.length < 4) throw new Error("Not enough arguments");
+    if (args.length < 10) throw new Error("Not enough arguments");
     let _arr:string[] = args.slice(2);
+    let arr: number[] = [];
     try{
         if (_arr.every((element) => !isNaN(Number(element)))){
-            let arr:number[] = _arr.map(Number);
-            return { days:arr.slice(0,-1), target: arr.pop()};
+            arr = _arr.map(Number);
+            return { days:arr.slice(0,-1), target: arr.pop()!};
         }
     }catch{
         throw new Error("Provided values were not numbers!");
     }
+    return { days: [], target: 0 };
 }
   
 interface Results {
@@ -41,7 +43,7 @@ const rate = (inp: Targets, avg: number): number =>{
     return rating
 } 
   
-const calculateExercise = (inp: Targets): Results => {
+export const calculateExercise = (inp: Targets): Results => {
     const _results = {} as Results;
     _results.periodLength = inp.days.length;
     _results.target = inp.target;

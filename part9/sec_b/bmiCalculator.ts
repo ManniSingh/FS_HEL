@@ -20,6 +20,9 @@ interface BmiMetrics {
   
   export const calculateBmi = (height: number, weight: number): string => {
     if (height === 0) throw new Error("Divide by 0!");
+    if (isNaN(height) || isNaN(weight)) {
+        throw new Error("malformed arguments!");
+    }
     height=height/100 // CM to Meters for meter per KG.
     const bmi = weight / (height*height);
     if (bmi < 18.5) {
