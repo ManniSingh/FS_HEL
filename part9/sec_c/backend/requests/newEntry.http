@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/patients
+Content-Type: application/json
+
+{
+  "name": "Martina Rigged",
+  "ssn":"110100101",
+  "dateOfBirth": "1979-01-30",
+  "gender": "female",
+  "occupation": "Cop"
+}
